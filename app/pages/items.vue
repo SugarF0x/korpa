@@ -1,11 +1,23 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue"
 import { useAsyncData } from "#app"
+import { groupBy } from 'lodash'
 
-const { data } = await useAsyncData('items', () => queryCollection('items').all())
+const { data } = await useAsyncData('items', async () => {
+  const items = await queryCollection('items').all()
+  return items.map(item => ({
+    ...item,
+    category: item.id.split('/').filter(Boolean).slice(2,4).at(-2)
+  }))
+})
+
+const toc = computed(() => {
+  if (!data.value) return null
+  return groupBy(data.value, item => item.category ?? 'общее')
+})
 
 const activeSections = ref(new Set())
-let observer
+let observer: IntersectionObserver
 
 onMounted(() => {
   observer = new IntersectionObserver(entries => {
@@ -21,7 +33,7 @@ onMounted(() => {
     threshold: [0, .5, 1]
   })
 
-  for (const section of data.value) {
+  for (const section of data.value ?? []) {
     const element = document.getElementById(section.id)
     if (element) observer.observe(element)
   }
@@ -34,13 +46,19 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
   <div class="docs-container">
     <aside class="toc">
       <nav>
-        <ul>
+        <ul v-if="toc">
           <li
-            v-for="section in data"
-            :key="section.id"
-            :class="{ active: activeSections.has(section.id) }"
+            v-for="category in Object.keys(toc)"
+            :key="category"
           >
-            <a :href="`#${section.id}`">{{ section.title }}</a>
+            <template v-if="toc[category]?.length">
+              <h3>{{ category }}</h3>
+              <ul>
+                <li v-for="item in toc[category]" :key="item.id" :class="{ active: activeSections.has(item.id) }">
+                  <a :href="`#${item.id}`">{{ item.title }}</a>
+                </li>
+              </ul>
+            </template>
           </li>
         </ul>
       </nav>
