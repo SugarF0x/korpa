@@ -1,24 +1,16 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue"
 import { useAsyncData } from "#app"
-import { groupBy } from 'lodash'
+import { generateTableOfContentsFromCollection, generateTableOfContentsFromIDs } from "~/data/table-of-contents"
 
-const { data } = await useAsyncData('items', async () => {
-  const items = await queryCollection('items').all()
-  return items.map(item => ({
-    ...item,
-    category: item.id.split('/').filter(Boolean).slice(2,4).at(-2)
-  }))
-})
+const { data } = await useAsyncData('items', async () => queryCollection('items').all())
 
-const toc = computed(() => {
-  if (!data.value) return null
-  return groupBy(data.value, item => item.category ?? 'общее')
-})
+const formatSectionId = (id: string) => id.split('/').slice(2).join('/')
 
-const activeSections = ref(new Set())
+const toc = computed(() => generateTableOfContentsFromCollection(data.value, 'Продукты'))
+const activeSections = ref(new Set<string>())
+
 let observer: IntersectionObserver
-
 onMounted(() => {
   observer = new IntersectionObserver(entries => {
     for (const entry of entries) {
@@ -34,7 +26,7 @@ onMounted(() => {
   })
 
   for (const section of data.value ?? []) {
-    const element = document.getElementById(section.id)
+    const element = document.getElementById(formatSectionId(section.id))
     if (element) observer.observe(element)
   }
 })
@@ -46,28 +38,14 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
   <div class="docs-container">
     <aside class="toc">
       <nav>
-        <ul v-if="toc">
-          <li
-            v-for="category in Object.keys(toc)"
-            :key="category"
-          >
-            <template v-if="toc[category]?.length">
-              <h3>{{ category }}</h3>
-              <ul>
-                <li v-for="item in toc[category]" :key="item.id" :class="{ active: activeSections.has(item.id) }">
-                  <a :href="`#${item.id}`">{{ item.title }}</a>
-                </li>
-              </ul>
-            </template>
-          </li>
-        </ul>
+        <table-of-contents :contents="toc" :active-id-set="activeSections" />
       </nav>
     </aside>
 
     <main class="content">
       <section
         v-for="section in data"
-        :id="section.id"
+        :id="formatSectionId(section.id)"
         :key="section.id"
         class="doc-section"
       >
@@ -98,36 +76,6 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
   border-right: 1px solid #333;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  li {
-    margin-bottom: 0.5rem;
-  }
-
-  a {
-    text-decoration: none;
-    color: #aaa;
-    transition: color 0.2s, background 0.2s;
-    padding: 4px 6px;
-    border-radius: 4px;
-    display: block;
-
-    &:hover {
-      color: #fff;
-      background: rgba(255, 255, 255, 0.05);
-    }
-
-    .active & {
-      font-weight: bold;
-      color: #00dc82;
-      background: rgba(0, 220, 130, 0.1);
-    }
-  }
 }
 
 .content {
