@@ -34,31 +34,38 @@ ul {
   margin: 0;
 
   &.inset {
-    margin-left: 8px;
+    margin-left: .5rem;
   }
 }
 
 li {
-  margin-bottom: 0.5rem;
+  margin-bottom: .5rem;
 }
 
 a {
+  margin-left: .25rem;
   text-decoration: none;
   color: #aaa;
-  transition: color 0.2s, background 0.2s;
+  transition: color .2s, background .2s;
   padding: 4px 6px;
   border-radius: 4px;
   display: block;
 
   &:hover {
     color: #fff;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, .05);
   }
 
   .active & {
     font-weight: bold;
     color: #00dc82;
-    background: rgba(0, 220, 130, 0.1);
+    background: rgba(0, 220, 130, .1);
   }
+}
+
+.category {
+  padding: .25rem;
+  border-left: 1px solid #333;
+  border-bottom: 1px solid #333;
 }
 </style>
