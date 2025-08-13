@@ -50,6 +50,7 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
         class="doc-section"
       >
         <h2>{{ section.title }}</h2>
+        <nuxt-img v-if="section.image" :src="section.image" :alt="section.title" />
         <ContentRenderer :value="section" />
       </section>
     </main>
