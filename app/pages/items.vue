@@ -90,6 +90,19 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
     margin-left: .5rem;
     margin-bottom: .5rem;
   }
+
+  :deep(.quote) {
+    display: block;
+    overflow: auto;
+    font-style: italic;
+    text-align: center;
+    padding: 1rem;
+    background-color: #ccc1;
+
+    quotes: '\201c' '\201d';
+    &:before { content: open-quote; }
+    &:after  { content: close-quote; }
+  }
 }
 
 .doc-section {
