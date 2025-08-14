@@ -76,6 +76,7 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
   border-right: 1px solid #333;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
+  margin-right: 2rem;
 
   @media (max-width: 768px) {
     display: none;
@@ -84,7 +85,6 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
 
 .content {
   flex: 1;
-  padding-left: 2rem;
 
   :deep(.info-box) {
     margin-left: .5rem;
