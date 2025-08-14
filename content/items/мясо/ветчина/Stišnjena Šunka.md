@@ -1,4 +1,4 @@
-::info-box{image="/images/items/stisnjena-sunka.webp" rating=7}
+::info-box{image="/images/items/stisnjena-sunka.webp" :rating="7"}
 ::
 
 Ветчина Stišnjena Šunka — это абсолютный гимн мясному совершенству. С первого взгляда она уже обещает праздник: нежный розовый оттенок, лёгкий блеск сока и тот самый аромат, который мгновенно вызывает неконтролируемый аппетит.
