@@ -76,6 +76,10 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
   border-right: 1px solid #333;
   max-height: calc(100vh - 4rem);
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
 }
 
 .content {
