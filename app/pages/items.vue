@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from "vue"
 import { useAsyncData } from "#app"
-import { generateTableOfContentsFromCollection, generateTableOfContentsFromIDs } from "~/data/table-of-contents"
+import { generateTableOfContentsFromCollection } from "~/data/table-of-contents"
 
 const { data } = await useAsyncData('items', async () => queryCollection('items').all())
 
@@ -50,8 +50,7 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
         class="doc-section"
       >
         <h2>{{ section.title }}</h2>
-        <nuxt-img v-if="section.image" :src="section.image" :alt="section.title" />
-        <ContentRenderer :value="section" />
+        <content-renderer :value="section" />
       </section>
     </main>
   </div>
@@ -82,6 +81,11 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
 .content {
   flex: 1;
   padding-left: 2rem;
+
+  :deep(.info-box) {
+    margin-left: .5rem;
+    margin-bottom: .5rem;
+  }
 }
 
 .doc-section {
@@ -92,6 +96,7 @@ onBeforeUnmount(() => { observer && observer.disconnect() })
     border-bottom: 1px solid #333;
     padding-bottom: 0.25rem;
     color: #fff;
+    clear: both;
   }
 
   p {
