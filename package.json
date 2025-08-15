@@ -5,6 +5,7 @@
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
+    "deploy": "nuxt generate && aws s3 --endpoint-url=https://storage.yandexcloud.net --profile yandex sync ./.output/public s3://korpa.sugar-fox.ru --delete",
     "generate": "nuxt generate",
     "preview": "nuxt preview"
   },
